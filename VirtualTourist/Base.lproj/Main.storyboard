@@ -41,7 +41,7 @@
             </objects>
             <point key="canvasLocation" x="1236" y="181"/>
         </scene>
-        <!--Photos View Controller-->
+        <!--Item-->
         <scene sceneID="ZHx-bI-TP9">
             <objects>
                 <collectionViewController id="F4a-pC-d7M" customClass="PhotosViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
@@ -56,7 +56,7 @@
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Zqf-wz-Njh">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="photoCell" id="Zqf-wz-Njh" customClass="PhotosCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="164" height="111"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -74,6 +74,9 @@
                                     <constraint firstItem="pXf-b4-AIT" firstAttribute="leading" secondItem="Zqf-wz-Njh" secondAttribute="leading" id="t90-Fb-a2U"/>
                                     <constraint firstAttribute="bottom" secondItem="pXf-b4-AIT" secondAttribute="bottom" id="xtd-T9-s0u"/>
                                 </constraints>
+                                <connections>
+                                    <outlet property="imageView" destination="pXf-b4-AIT" id="dl6-vT-oO3"/>
+                                </connections>
                             </collectionViewCell>
                         </cells>
                         <connections>
@@ -81,6 +84,20 @@
                             <outlet property="delegate" destination="F4a-pC-d7M" id="jlW-BF-Id6"/>
                         </connections>
                     </collectionView>
+                    <tabBarItem key="tabBarItem" title="Item" id="duG-yK-kOj"/>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="FXb-ta-AtN"/>
+                        <barButtonItem title="New Collection" id="gB2-0b-g3m">
+                            <connections>
+                                <action selector="newCollectionButtonAction:" destination="F4a-pC-d7M" id="zNp-PX-cnQ"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="cRU-V7-qgc"/>
+                    </toolbarItems>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="newCollectionButton" destination="gB2-0b-g3m" id="IN4-xJ-ROP"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MZB-AY-cDx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

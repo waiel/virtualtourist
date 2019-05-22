@@ -15,6 +15,7 @@
 		96048177229499C900EA96B2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96048175229499C900EA96B2 /* LaunchScreen.storyboard */; };
 		9604817F2294A1AD00EA96B2 /* FlickrAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9604817E2294A1AD00EA96B2 /* FlickrAPI.swift */; };
 		960481812294AB0D00EA96B2 /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960481802294AB0D00EA96B2 /* PhotosViewController.swift */; };
+		960481832295EB0000EA96B2 /* PhotosCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960481822295EB0000EA96B2 /* PhotosCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		96048178229499C900EA96B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9604817E2294A1AD00EA96B2 /* FlickrAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrAPI.swift; sourceTree = "<group>"; };
 		960481802294AB0D00EA96B2 /* PhotosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosViewController.swift; sourceTree = "<group>"; };
+		960481822295EB0000EA96B2 /* PhotosCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 				96048178229499C900EA96B2 /* Info.plist */,
 				96048170229499C800EA96B2 /* VirtualTourist.xcdatamodeld */,
 				9604817E2294A1AD00EA96B2 /* FlickrAPI.swift */,
+				960481822295EB0000EA96B2 /* PhotosCollectionViewCell.swift */,
 			);
 			path = VirtualTourist;
 			sourceTree = "<group>";
@@ -149,6 +152,7 @@
 				9604816A229499C800EA96B2 /* AppDelegate.swift in Sources */,
 				96048172229499C800EA96B2 /* VirtualTourist.xcdatamodeld in Sources */,
 				960481812294AB0D00EA96B2 /* PhotosViewController.swift in Sources */,
+				960481832295EB0000EA96B2 /* PhotosCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -62,4 +62,12 @@ extension MapViewController: MKMapViewDelegate {
         }
         return pinView
     }
+    
+    
+    //open photos view when slecting annotiation
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "ShowPhotos", sender: self)
+        }
+    }
 }

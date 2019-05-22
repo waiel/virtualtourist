@@ -13,6 +13,8 @@
 		96048172229499C800EA96B2 /* VirtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 96048170229499C800EA96B2 /* VirtualTourist.xcdatamodeld */; };
 		96048174229499C900EA96B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96048173229499C900EA96B2 /* Assets.xcassets */; };
 		96048177229499C900EA96B2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96048175229499C900EA96B2 /* LaunchScreen.storyboard */; };
+		9604817F2294A1AD00EA96B2 /* FlickrAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9604817E2294A1AD00EA96B2 /* FlickrAPI.swift */; };
+		960481812294AB0D00EA96B2 /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960481802294AB0D00EA96B2 /* PhotosViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		96048173229499C900EA96B2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		96048176229499C900EA96B2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		96048178229499C900EA96B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9604817E2294A1AD00EA96B2 /* FlickrAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrAPI.swift; sourceTree = "<group>"; };
+		960481802294AB0D00EA96B2 /* PhotosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,11 +62,13 @@
 			children = (
 				96048169229499C800EA96B2 /* AppDelegate.swift */,
 				9604816B229499C800EA96B2 /* MapViewController.swift */,
+				960481802294AB0D00EA96B2 /* PhotosViewController.swift */,
 				9604816D229499C800EA96B2 /* Main.storyboard */,
 				96048173229499C900EA96B2 /* Assets.xcassets */,
 				96048175229499C900EA96B2 /* LaunchScreen.storyboard */,
 				96048178229499C900EA96B2 /* Info.plist */,
 				96048170229499C800EA96B2 /* VirtualTourist.xcdatamodeld */,
+				9604817E2294A1AD00EA96B2 /* FlickrAPI.swift */,
 			);
 			path = VirtualTourist;
 			sourceTree = "<group>";
@@ -139,8 +145,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				9604816C229499C800EA96B2 /* MapViewController.swift in Sources */,
+				9604817F2294A1AD00EA96B2 /* FlickrAPI.swift in Sources */,
 				9604816A229499C800EA96B2 /* AppDelegate.swift in Sources */,
 				96048172229499C800EA96B2 /* VirtualTourist.xcdatamodeld in Sources */,
+				960481812294AB0D00EA96B2 /* PhotosViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

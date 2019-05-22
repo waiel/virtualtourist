@@ -1,22 +1,21 @@
 //
-//  MapViewController.swift
+//  PhotosViewController.swift
 //  VirtualTourist
 //
-//  Created by Waiel Eid on 21/5/19.
+//  Created by Waiel Eid on 22/5/19.
 //  Copyright © 2019 Waiel Eid. All rights reserved.
 //
 
+import Foundation
 import UIKit
-import MapKit
 
-class MapViewController: UIViewController {
+class PhotosViewController: UICollectionViewController {
+    
 
-    @IBOutlet weak var mapView: MKMapView!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
-
-
+    
+    
 }
-

@@ -43,6 +43,13 @@ class MapViewController: UIViewController {
     }
     
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowPhotos" {
+            let pvc = segue.destination as! PhotosViewController
+            let coord = sender as! CLLocationCoordinate2D
+            pvc.coordinates = coord
+        }
+    }
 
 
 }
@@ -67,7 +74,7 @@ extension MapViewController: MKMapViewDelegate {
     //open photos view when slecting annotiation
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         DispatchQueue.main.async {
-            self.performSegue(withIdentifier: "ShowPhotos", sender: self)
+            self.performSegue(withIdentifier: "ShowPhotos", sender: view.annotation?.coordinate)
         }
     }
 }

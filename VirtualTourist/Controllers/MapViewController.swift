@@ -8,10 +8,12 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 
 class MapViewController: UIViewController {
     
+    var fetchedResultsController: NSFetchedResultsController<Pin>!
     var dataController : DataController {
         return DataController.sharedInstance
     }
@@ -24,33 +26,73 @@ class MapViewController: UIViewController {
          mapView.delegate = self
         let longPressRecogniser = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         mapView.addGestureRecognizer(longPressRecogniser)
+        
     }
 
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        setFetchResultController()
         
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        fetchedResultsController = nil
+    }
+    
+    func setFetchResultController (){
+        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        do {
+            try fetchedResultsController.performFetch()
+            updateMap()
+        } catch {
+            fatalError("Could not perform fetch: \(error.localizedDescription)")
+        }
+    }
+    
+    func updateMap() {
+        guard let pins = fetchedResultsController.fetchedObjects else { return }
+     
+        for pin in pins {
+            if mapView.annotations.contains(where: { pin.compare(to: $0.coordinate)}){
+                continue
+                
+            }
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = pin.coordinate
+            if (self.mapView.view(for: annotation) == nil) {
+                mapView.addAnnotation(annotation)
+            }
+        }
+    }
     
     @objc func handleLongPress(_ gestureRecognizer: UIGestureRecognizer) {
         if gestureRecognizer.state != .began { return }
         let touchPoint = gestureRecognizer.location(in: mapView)
+        let coordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
+        print(coordinate)
+        let pin = Pin(context: dataController.viewContext)
+        pin.coordinate = coordinate
+
+        try? dataController.viewContext.save()
         
-        let cordinates = mapView.convert(touchPoint, toCoordinateFrom: mapView)
-        print(cordinates)
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = cordinates
-        mapView.addAnnotation(annotation)
+//        let annotation = MKPointAnnotation()
+//        annotation.coordinate = coordinate
+//        mapView.addAnnotation(annotation)
     }
     
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowPhotos" {
             let pvc = segue.destination as! PhotosViewController
-            let coord = sender as! CLLocationCoordinate2D
-            pvc.coordinates = coord
-            pvc.dataController = dataController
+            pvc.pin = fetchedResultsController.fetchedObjects?.filter { pin in pin.compare(to: mapView.selectedAnnotations.first!.coordinate) }.first!
+           
         }
     }
 
@@ -79,5 +121,11 @@ extension MapViewController: MKMapViewDelegate {
         DispatchQueue.main.async {
             self.performSegue(withIdentifier: "ShowPhotos", sender: view.annotation?.coordinate)
         }
+    }
+}
+
+extension MapViewController: NSFetchedResultsControllerDelegate{
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        updateMap()
     }
 }

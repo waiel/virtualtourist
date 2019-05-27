@@ -12,7 +12,9 @@ import MapKit
 
 class MapViewController: UIViewController {
     
- 
+    var dataController : DataController {
+        return DataController.sharedInstance
+    }
 
     @IBOutlet weak var mapView: MKMapView!
     
@@ -48,6 +50,7 @@ class MapViewController: UIViewController {
             let pvc = segue.destination as! PhotosViewController
             let coord = sender as! CLLocationCoordinate2D
             pvc.coordinates = coord
+            pvc.dataController = dataController
         }
     }
 

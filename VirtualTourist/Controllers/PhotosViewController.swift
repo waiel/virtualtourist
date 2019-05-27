@@ -12,9 +12,10 @@ import MapKit
 class PhotosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     var photoCellId = "photoCell"
-    var FI : [FlickrImage]?
+    var photos : [Photo]?
     var coordinates: CLLocationCoordinate2D!
-    
+    var dataController : DataController
+    var fi : FlickrImage
     let spacingBetweenItems:CGFloat = 5
     let totalCellCount:Int = 25
 
@@ -44,8 +45,10 @@ class PhotosViewController: UIViewController, UICollectionViewDataSource, UIColl
             
             if flickrImages != nil {
                 
+                
                 DispatchQueue.main.async {
-                    
+                    self.FI = flickrImages
+
                     for photo in flickrImages ?? [] {
                         print(photo.imageURLString())
                     }
@@ -55,24 +58,16 @@ class PhotosViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
     @IBAction func newCollectionButtonAction(_ sender: Any) {
         
     }
+    
+    
     func getFlickrImagesRandomResult(completion: @escaping (_ result:[FlickrImage]?) -> Void) {
         
         var result:[FlickrImage] = []
-        FlickrAPI.getFlickrImages(lat: 26.50114964470042, lng: 44.0034172046972) { (success, flickrImages) in
+        FlickrAPI.getFlickrImages(lat: coordinates.latitude, lng: coordinates.longitude) { (success, flickrImages) in
             if success {
-                
                 if flickrImages!.count > self.totalCellCount {
                     var randomArray:[Int] = []
                     
@@ -96,6 +91,7 @@ class PhotosViewController: UIViewController, UICollectionViewDataSource, UIColl
                 
             } else {
                 completion(nil)
+                print("No images found")
             }
         }
     }
@@ -109,12 +105,45 @@ class PhotosViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: photoCellId, for: indexPath) as! PhotosCollectionViewCell
+     
+        
+        getdate(from: imgurl){data, response, error in
+            guard let data = data, error == nil else { return }
+            self.imageView.image = UIImage(data: data)
+        }
         
         // Configure the cell
         
-        //        cell.imageView.image = FI?[indexPath].
+        URLSession.shared.dataTask(with: imgurl) { data, response, error in
+            guard
+                let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+                let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+                let data = data, error == nil,
+                cell.imageView = UIImage(data: data)
+                else { return }
+            DispatchQueue.main.async() {
+                self.image = image
+            }
+            }.resume()
+        
+        
         
         
         return cell
     }
+    
+    
+//    func getData(from: String) -> Any{
+//        URLSession.shared.dataTask(with: from) { data, response, error in
+//            guard
+//                let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+//                let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+//                let data = data, error == nil,
+//                let image = UIImage(data: data)
+//                else { return }
+//            DispatchQueue.main.async() {
+//                self.image = image
+//            }
+//            }.resume()
+//    }
 }

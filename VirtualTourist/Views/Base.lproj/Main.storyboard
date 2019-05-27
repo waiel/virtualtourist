@@ -117,6 +117,10 @@
                                     <action selector="newCollectionButtonAction:" destination="sDU-Eo-U9d" eventType="touchUpInside" id="pzc-Q4-Zg1"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Oy7-QL-CVa">
+                                <rect key="frame" x="150" y="499" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -133,6 +137,7 @@
                     <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="Oy7-QL-CVa" id="7eQ-Hr-kR4"/>
                         <outlet property="collectionView" destination="Lr5-Yk-qb3" id="rTh-2a-9ma"/>
                         <outlet property="flowLayout" destination="baC-La-0dF" id="YJy-rd-3DM"/>
                         <outlet property="mapView" destination="F2y-lg-skj" id="2Gd-ZZ-bXw"/>

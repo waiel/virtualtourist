@@ -28,8 +28,6 @@ extension Pin {
         creationDate = Date()
     }
     
-    
-    
     func compare(to coordinate: CLLocationCoordinate2D) -> Bool {
         return (latitude == coordinate.latitude && longitude == coordinate.longitude)
     }

@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 class PhotosCollectionViewCell:  UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
@@ -16,16 +15,12 @@ class PhotosCollectionViewCell:  UICollectionViewCell {
     
     
     func initWithPhoto(_ photo: Photo) {
-        
         if photo.image != nil {
-            
             DispatchQueue.main.async {
                 self.imageView.image = UIImage(data: photo.image! as Data)
                 self.activityIndicator.stopAnimating()
             }
-            
         } else {
-            
             downloadImage(photo)
         }
     }
@@ -33,25 +28,15 @@ class PhotosCollectionViewCell:  UICollectionViewCell {
     func downloadImage(_ photo: Photo) {
         URLSession.shared.dataTask(with: URL(string: photo.imageURL!)!) { (data, response, error) in
             if error == nil {
-                
                 DispatchQueue.main.async {
-                    
                     self.imageView.image = UIImage(data: data! as Data)
                     self.activityIndicator.stopAnimating()
                     self.saveImageDataToCoreData(photo: photo, imageData: data! )
-                
                 }
             }
             
-            }
-            
-            .resume()
+        }.resume()
     }
-    
-   
-    
-    
-    //Save Imagesns
     
     func saveImageDataToCoreData(photo: Photo, imageData: Data) {
         do {

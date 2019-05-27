@@ -9,21 +9,15 @@
 import Foundation
 
 class FlickrAPI {
-    
+    // MARK: - Private Variables
     private static let Endpoint  = "https://api.flickr.com/services/rest/"
     private static let APIKey    = "99ba4dcae4d0ad5a389482f69f063751"
     private static let SearchMethod = "flickr.photos.search"
     private static let format = "json"
     private static let SearcRadius = 10
     
-    
-    //potintial points
-    //flickr.photos.search  https://www.flickr.com/services/api/flickr.photos.search.html
-    //https://api.flickr.com/services/rest/?method=flickr.photos.search&name=value
-    
-    
-    //Get Images
-    
+    // MARK: - Functions
+    //Get Flicker images from
     static func getFlickrImages(lat: Double, lng: Double, completion: @escaping (_ success: Bool, _ flickrImages:[FlickrImage]?) -> Void) {
         let request = NSMutableURLRequest(url: URL(string: "\(Endpoint)?method=\(SearchMethod)&format=\(format)&api_key=\(APIKey)&lat=\(lat)&lon=\(lng)&radius=\(SearcRadius)")!)
         
@@ -67,5 +61,34 @@ class FlickrAPI {
         task.resume()
     }
     
-    
+    // Get images from flickr
+    static func getFlickrImagesRandomResult(pin:Pin, totalCellCount: Int , completion: @escaping (_ result:[FlickrImage]?) -> Void) {
+        
+        var result:[FlickrImage] = []
+        FlickrAPI.getFlickrImages(lat: pin.latitude, lng: pin.longitude) { (success, flickrImages) in
+            if success {
+                if flickrImages!.count > totalCellCount {
+                    var randomArray:[Int] = []
+                    while randomArray.count < totalCellCount {
+                        let random = arc4random_uniform(UInt32(flickrImages!.count))
+                        if !randomArray.contains(Int(random)) { randomArray.append(Int(random)) }
+                    }
+                    
+                    for random in randomArray {
+                        result.append(flickrImages![random])
+                    }
+                    
+                    completion(result)
+                    
+                } else {
+                    
+                    completion(flickrImages!)
+                }
+                
+            } else {
+                completion(nil)
+                print("No images found")
+            }
+        }
+    }
 }

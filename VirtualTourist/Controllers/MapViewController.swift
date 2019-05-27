@@ -12,27 +12,28 @@ import CoreData
 
 
 class MapViewController: UIViewController {
-    
+    // MARK: - Varisalbes
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     var dataController : DataController {
         return DataController.sharedInstance
     }
-
+    
+    // MARK: - IBOutlets
     @IBOutlet weak var mapView: MKMapView!
     
+    
+    // MARK: Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+
          mapView.delegate = self
         let longPressRecogniser = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         mapView.addGestureRecognizer(longPressRecogniser)
-        
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setFetchResultController()
-        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -40,6 +41,7 @@ class MapViewController: UIViewController {
         fetchedResultsController = nil
     }
     
+    // Load Data
     func setFetchResultController (){
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
         let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
@@ -55,15 +57,15 @@ class MapViewController: UIViewController {
         }
     }
     
+    
+    // update the annotiation on the map
     func updateMap() {
         guard let pins = fetchedResultsController.fetchedObjects else { return }
      
         for pin in pins {
             if mapView.annotations.contains(where: { pin.compare(to: $0.coordinate)}){
                 continue
-                
             }
-            
             let annotation = MKPointAnnotation()
             annotation.coordinate = pin.coordinate
             if (self.mapView.view(for: annotation) == nil) {
@@ -72,6 +74,7 @@ class MapViewController: UIViewController {
         }
     }
     
+    // long press add a annotiation on the map
     @objc func handleLongPress(_ gestureRecognizer: UIGestureRecognizer) {
         if gestureRecognizer.state != .began { return }
         let touchPoint = gestureRecognizer.location(in: mapView)
@@ -81,13 +84,9 @@ class MapViewController: UIViewController {
         pin.coordinate = coordinate
 
         try? dataController.viewContext.save()
-        
-//        let annotation = MKPointAnnotation()
-//        annotation.coordinate = coordinate
-//        mapView.addAnnotation(annotation)
     }
     
-
+    // transfer data to second view
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowPhotos" {
             let pvc = segue.destination as! PhotosViewController
@@ -98,12 +97,11 @@ class MapViewController: UIViewController {
 
 
 }
-
+// MARK: - Extensions
 extension MapViewController: MKMapViewDelegate {
- 
+    // configure annotiation look
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: "pin") as? MKPinAnnotationView
-        
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
             pinView!.canShowCallout = true
@@ -125,6 +123,7 @@ extension MapViewController: MKMapViewDelegate {
 }
 
 extension MapViewController: NSFetchedResultsControllerDelegate{
+    //update the map whenever data is cheanged 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         updateMap()
     }

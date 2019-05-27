@@ -10,8 +10,8 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate{
-    
+class PhotosViewController: UIViewController{
+    // MARK: - Variables
     var photoCellId = "PhotoCell"
     var pin: Pin! = nil
     var fetchedResultsController: NSFetchedResultsController<Photo>!
@@ -20,50 +20,43 @@ class PhotosViewController: UIViewController, UICollectionViewDataSource, UIColl
     let totalCellCount:Int = 25
 
     
-    
+    // MARK: - IBOutlets
     @IBOutlet weak var mapView: MKMapView!
-
     @IBOutlet weak var newCollectionButton: UIButton!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var noPhotoLable: UILabel!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-     
-        //self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: photoCellId)
-//        collectionView.delegate = self
-//        collectionView.dataSource = self
-//
-        //set flowlayout
-        let space: CGFloat = 3.0
-        let dimension = (self.view.frame.size.width - (2 * space)) / 3.0
+        //set flowlayout size and dimentions
+        let dimension = (self.view.frame.size.width - (2 * spacingBetweenItems)) / 3.0
         flowLayout.minimumLineSpacing = spacingBetweenItems
         flowLayout.minimumInteritemSpacing = spacingBetweenItems
         flowLayout.itemSize = CGSize(width: dimension, height: dimension)
         
-        
         newCollectionButton.isEnabled = true
         noPhotoLable.isHidden = true
+        activityIndicator.hidesWhenStopped = true
         
-        
+        // view the selected annotation on the map
         let annotation = MKPointAnnotation()
         annotation.coordinate = pin.coordinate
         mapView.addAnnotation(annotation)
         mapView.showAnnotations([annotation], animated: true)
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        //load the data
         setFetchedResultsController()
-       
-    }
+     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        //clear the data
         fetchedResultsController = nil
     }
     
@@ -88,8 +81,19 @@ class PhotosViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
     }
     
+    //Enable / Disable user interations
+    func processUI(process: Bool){
+        self.collectionView.isUserInteractionEnabled = !process
+        self.newCollectionButton.isEnabled = !process
+        if process {
+            activityIndicator.startAnimating()
+        }else{
+            activityIndicator.stopAnimating()
+        }
+    }
     
     
+    // MARK: - IBActions
     @IBAction func newCollectionButtonAction(_ sender: Any) {
         processUI(process: true)
         
@@ -100,16 +104,18 @@ class PhotosViewController: UIViewController, UICollectionViewDataSource, UIColl
             try? DataController.sharedInstance.viewContext.save()
         }
         
-        getFlickrImagesRandomResult(pin: pin) { flickerImages in
+        FlickrAPI.getFlickrImagesRandomResult(pin: pin, totalCellCount: totalCellCount) { flickerImages in
             if(flickerImages == nil){
-                //displat error to user
-                print("Error")
+                //display error to user
+                let alert = UIAlertController(title: "Error", message: "Error Loading images from flickr!", preferredStyle: .alert)
+                self.present(alert, animated: true, completion: nil)
+                self.processUI(process: false)
                 return
             }
             
-            for fi in flickerImages ??  [] {
+            for fl in flickerImages ??  [] {
                 let photo = Photo(context: DataController.sharedInstance.viewContext)
-                photo.imageURL = fi.imageURLString()
+                photo.imageURL = fl.imageURLString()
                 photo.pin = self.pin
             }
             
@@ -117,62 +123,23 @@ class PhotosViewController: UIViewController, UICollectionViewDataSource, UIColl
             
             DispatchQueue.main.async {
                 self.processUI(process: false)
+                //display no imaage lable if no images found
                 self.noPhotoLable.isHidden = ((flickerImages?.count ?? 0) != 0)
             }
         }
     }
-        
-    
-    func getFlickrImagesRandomResult(pin:Pin,  completion: @escaping (_ result:[FlickrImage]?) -> Void) {
-        
-        var result:[FlickrImage] = []
-        FlickrAPI.getFlickrImages(lat: pin.latitude, lng: pin.longitude) { (success, flickrImages) in
-            if success {
-                if flickrImages!.count > self.totalCellCount {
-                    var randomArray:[Int] = []
-                    
-                    while randomArray.count < self.totalCellCount {
-                        
-                        let random = arc4random_uniform(UInt32(flickrImages!.count))
-                        if !randomArray.contains(Int(random)) { randomArray.append(Int(random)) }
-                    }
-                    
-                    for random in randomArray {
-                        
-                        result.append(flickrImages![random])
-                    }
-                    
-                    completion(result)
-                    
-                } else {
-                    
-                    completion(flickrImages!)
-                }
-                
-            } else {
-                completion(nil)
-                print("No images found")
-            }
-        }
-    }
+}
 
-    
-    func processUI(process: Bool){
-        self.collectionView.isUserInteractionEnabled = !process
-//self.newCollectionButton.isEnabled = !process
-        
-    }
-    
+// MARK: - Extensions
+extension PhotosViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        //print(fetchedResultsController.fetchedObjects?.count as Any)
         return fetchedResultsController.fetchedObjects?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: photoCellId, for: indexPath as IndexPath) as! PhotosCollectionViewCell
         cell.activityIndicator.hidesWhenStopped = true
+        cell.activityIndicator.center = CGPoint(x: cell.contentView.frame.size.width / 2, y: cell.contentView.frame.size.height / 2)
         cell.activityIndicator.startAnimating()
         cell.initWithPhoto(fetchedResultsController.object(at: indexPath))
         return cell
@@ -184,7 +151,6 @@ class PhotosViewController: UIViewController, UICollectionViewDataSource, UIColl
         DataController.sharedInstance.viewContext.delete(photo)
         try? DataController.sharedInstance.viewContext.save()
     }
-
 }
 
 extension PhotosViewController: NSFetchedResultsControllerDelegate {
